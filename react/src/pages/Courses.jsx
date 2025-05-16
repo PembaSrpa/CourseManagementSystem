@@ -28,7 +28,20 @@ const Courses = () => {
                     <h2 className='text-lg font-semibold mb-4'>
                         Add New Course
                     </h2>
-                    <form>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (formData.name && formData.description) {
+                                courses.push({
+                                    id: courses.length + 1,
+                                    name: formData.name,
+                                    description: formData.description,
+                                });
+                            }
+                            setShowForm(false);
+                            setFormData({ name: "", description: "" });
+                        }}
+                    >
                         <div className='mb-4'>
                             <label className='block mb-2'>Name</label>
                             <input

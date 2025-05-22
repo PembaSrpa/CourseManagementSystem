@@ -18,7 +18,7 @@ const Sidebar = () => {
                             }`
                         }
                     >
-                        <h1 className='text-3xl font-bold p-1'>Home</h1>
+                        <h1 className='text-3xl font-bold p-1'>Course Management System</h1>
                     </NavLink>
                 </div>
 

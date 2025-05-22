@@ -75,7 +75,7 @@ const Teachers = () => {
 
     const updateTeacher = async (id) => {
         await axios
-            .put(`http://localhost:5050/api/updateteacher/${id}`, {
+            .post(`http://localhost:5050/api/updateteacher/${id}`, {
                 name: formData.name,
                 email: formData.email,
                 subject: formData.subject,
@@ -90,7 +90,7 @@ const Teachers = () => {
     };
     const deleteTeacher = async (id) => {
         await axios
-            .delete(`http://localhost:5050/api/deleteteacher/${id}`)
+            .post(`http://localhost:5050/api/deleteteacher/${id}`)
             .then((response) => {
                 console.log(response.data);
             })
@@ -110,7 +110,7 @@ const Teachers = () => {
             {showForm && (
                 <div className='mb-6 p-4 border rounded-lg'>
                     <h2 className='text-lg font-semibold mb-4'>
-                        Add New Course
+                        {editing ? "Edit Teacher" : "Add New Teacher"}
                     </h2>
                     <form onSubmit={handleSubmit}>
                         <div className='mb-4'>
@@ -129,7 +129,8 @@ const Teachers = () => {
                         </div>
                         <div className='mb-4'>
                             <label className='block mb-2'>Email</label>
-                            <textarea
+                            <input
+                                type='text'
                                 className='w-full p-2 border rounded'
                                 value={formData.email}
                                 onChange={(e) =>
@@ -142,7 +143,8 @@ const Teachers = () => {
                         </div>
                         <div className='mb-4'>
                             <label className='block mb-2'>Subject</label>
-                            <textarea
+                            <input
+                                type='text'
                                 className='w-full p-2 border rounded'
                                 value={formData.subject}
                                 onChange={(e) =>

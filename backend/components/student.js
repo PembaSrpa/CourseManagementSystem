@@ -7,10 +7,10 @@ export const createStudent = (req, res) => {
     db.query(sql, [name, email, course], (err, result) => {
         if (err) {
             console.error("Error creating course:", err);
-            return res.status(500).json({ error: "Error creating course" });
+            return res.status(500).json({ error: "Error creating student" });
         }
         return res.send({
-            message: "Course created successfully",
+            message: "Student created successfully",
             result,
         });
     });
@@ -40,10 +40,10 @@ export const updateStudent = (req, res) => {
     db.query(sql, [name, email, course, id], (err, result) => {
         if (err) {
             console.error("Error updating course:", err);
-            return res.status(500).json({ error: "Error updating course" });
+            return res.status(500).json({ error: "Error updating student" });
         }
         return res.send({
-            message: "Course updated successfully",
+            message: "Student updated successfully",
             result,
         });
     });
@@ -55,10 +55,10 @@ export const deleteStudent = (req, res) => {
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error("Error deleting course:", err);
-            return res.status(500).json({ error: "Error deleting course" });
+            return res.status(500).json({ error: "Error deleting student" });
         }
         return res.send({
-            message: "Course deleted successfully",
+            message: "Student deleted successfully",
             result,
         });
     });
@@ -70,13 +70,13 @@ export const getStudentById = (req, res) => {
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error("Error fetching course:", err);
-            return res.status(500).json({ error: "Error fetching course" });
+            return res.status(500).json({ error: "Error fetching student" });
         }
         if (result.length === 0) {
-            return res.status(404).json({ error: "Course not found" });
+            return res.status(404).json({ error: "Srudent not found" });
         }
         return res.send({
-            message: "Course fetched successfully",
+            message: "Student fetched successfully",
             result,
         });
     });

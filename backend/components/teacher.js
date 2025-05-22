@@ -1,8 +1,7 @@
-import { db } from "../config/db";
-
+import { db } from "../config/db.js";
 
 export const createTeacher = (req, res) => {
-    const {name, email, subject } = req.body;
+    const { name, email, subject } = req.body;
 
     const sql = "INSERT INTO teacher (name, email, subject) VALUES ( ?, ?,?)";
     db.query(sql, [name, email, subject], (err, result) => {
@@ -13,31 +12,32 @@ export const createTeacher = (req, res) => {
         return res.send({
             message: "Teacher created successfully",
             result,
-        })
+        });
     });
-}
-
-
+};
 
 export const getTeachers = (req, res) => {
     const sql = "SELECT * FROM teacher";
     db.query(sql, (err, result) => {
         if (err) {
             console.error("Error fetching teachers:", err);
-            return res.status(500).json({ error: "Error fetching Teacher data" });
+            return res
+                .status(500)
+                .json({ error: "Error fetching Teacher data" });
         }
         return res.send({
             message: "Teacher data fetched successfully",
             result,
-        })
+        });
     });
-}
+};
 
 export const updateTeacher = (req, res) => {
     const { id } = req.params;
     const { name, email, subject } = req.body;
 
-    const sql = "UPDATE teacher SET name = ?, email = ?, subject = ? WHERE id = ?";
+    const sql =
+        "UPDATE teacher SET name = ?, email = ?, subject = ? WHERE id = ?";
     db.query(sql, [name, email, subject, id], (err, result) => {
         if (err) {
             console.error("Error updating teacher:", err);
@@ -46,10 +46,9 @@ export const updateTeacher = (req, res) => {
         return res.send({
             message: "Teacher updated successfully",
             result,
-        })
+        });
     });
-}
-
+};
 
 export const deleteTeacher = (req, res) => {
     const { id } = req.params;
@@ -62,9 +61,9 @@ export const deleteTeacher = (req, res) => {
         return res.send({
             message: "Teacher deleted successfully",
             result,
-        })
+        });
     });
-}
+};
 
 export const getTeacherById = (req, res) => {
     const { id } = req.params;
@@ -80,6 +79,6 @@ export const getTeacherById = (req, res) => {
         return res.send({
             message: "Teacher fetched successfully",
             result,
-        })
+        });
     });
-}
+};

@@ -1,13 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
+import Button from "./Button";
+import { FiHome } from "react-icons/fi";
 
 const Sidebar = () => {
-    const { courses, students, teachers } = useAppContext();
-
     return (
-        <div className='w-64 bg-gray-300 shadow-md h-full fixed'>
-            <div className='p-4'>
-                <div className='text-center'>
+        <div className='w-64 bg-gray-300 shadow-md h-full fixed flex flex-col'>
+            <div className='p-4 flex-1 flex flex-col'>
+                <div className='flex items-center justify-center'>
                     <NavLink
                         to='/dashboard'
                         className={({ isActive }) =>
@@ -18,11 +17,11 @@ const Sidebar = () => {
                             }`
                         }
                     >
-                        <h1 className='text-3xl font-bold p-1'>Course Management System</h1>
+                        <FiHome className='text-6xl' />
                     </NavLink>
                 </div>
 
-                <div className='mt-8'>
+                <div className='mt-8 flex-1'>
                     <h3 className='text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2'>
                         Resources
                     </h3>
@@ -66,6 +65,16 @@ const Sidebar = () => {
                             <span>Teachers</span>
                         </NavLink>
                     </div>
+                </div>
+                <div className='mt-auto ml-15'>
+                    <Button>
+                        <NavLink
+                            to='/'
+                            className='flex justify-between items-center p-2 rounded hover:bg-gray-50'
+                        >
+                            Logout
+                        </NavLink>
+                    </Button>
                 </div>
             </div>
         </div>

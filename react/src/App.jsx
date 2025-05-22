@@ -12,14 +12,45 @@ function App() {
         <AppProvider>
             <Router>
                 <div className='flex min-h-screen'>
-                    <Sidebar />
                     <div className='flex-1'>
                         <Routes>
-                            <Route path='/dashboard' element={<Dashboard />} />
-                            <Route path='/courses' element={<Courses />} />
-                            <Route path='/students' element={<Students />} />
-                            <Route path='/teachers' element={<Teachers />} />
                             <Route path='/' element={<Login />} />
+                            <Route
+                                path='/dashboard'
+                                element={
+                                    <>
+                                        <Sidebar />
+                                        <Dashboard />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path='/courses'
+                                element={
+                                    <>
+                                        <Sidebar />
+                                        <Courses />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path='/students'
+                                element={
+                                    <>
+                                        <Sidebar />
+                                        <Students />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path='/teachers'
+                                element={
+                                    <>
+                                        <Sidebar />
+                                        <Teachers />
+                                    </>
+                                }
+                            />
                         </Routes>
                     </div>
                 </div>

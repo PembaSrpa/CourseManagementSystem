@@ -26,3 +26,14 @@ export const checkUserLogin = (req, res) => {
         });
     });
 };
+export const addUser = (req, res) => {
+    const { email, password } = req.body;
+    const q = "INSERT INTO users (email, password) VALUES (?, ?)";
+    db.query(q, [email, password], (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.status(200).send({
+            message: "User added successfully",
+            user: { id: result.insertId, email },
+        });
+    });
+};

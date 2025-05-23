@@ -15,6 +15,7 @@ const Courses = lazy(() => import("./pages/Courses"));
 const Students = lazy(() => import("./pages/Student"));
 const Teachers = lazy(() => import("./pages/Teacher"));
 const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                             <Route path='/' element={<HomePage />} />
                             <Route path='/home' element={<HomePage />} />
                             <Route path='/login' element={<Login />} />
+                            <Route path='/register' element={<Register />} />
                             <Route
                                 path='/'
                                 element={

@@ -1,60 +1,55 @@
 import React from "react";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserPlus } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import Button from "../components/Button";
 
-const Login = () => {
-    const [logData, setLogData] = React.useState({
+const Register = () => {
+    const [regData, setRegData] = React.useState({
+        name: "",
         email: "",
         password: "",
     });
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState("");
+    const [success, setSuccess] = React.useState("");
     const navigate = useNavigate();
 
-    const handleLog = (e) => {
+    const handleReg = (e) => {
         const { name, value } = e.target;
-        setLogData((prev) => ({
+        setRegData((prev) => ({
             ...prev,
             [name]: value,
         }));
         setError("");
+        setSuccess("");
     };
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError("");
+        setSuccess("");
         try {
             const res = await axios.post(
-                "http://localhost:5050/api/checkUserLogin",
-                logData
+                "http://localhost:5050/api/addUser",
+                regData
             );
             if (res.data && (res.data.result || res.data.user)) {
-                localStorage.setItem("isAuthenticated", "true");
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(res.data.result || res.data.user)
-                );
+                setSuccess("Registration successful! Redirecting to login...");
                 setTimeout(() => {
-                    navigate("/dashboard");
-                }, 100);
+                    navigate("/login");
+                }, 1200);
             } else {
-                setError("Invalid email or password");
-                setLogData((prev) => ({
-                    ...prev,
-                    password: "",
-                }));
+                setError(res.data?.message || "Registration failed");
             }
         } catch (err) {
-            setError("Invalid email or password");
-            setLogData((prev) => ({
-                ...prev,
-                password: "",
-            }));
+            setError(
+                err.response?.data?.message ||
+                    "Registration failed. Please try again."
+            );
         }
         setLoading(false);
     };
@@ -62,39 +57,37 @@ const Login = () => {
     return (
         <div className='flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200'>
             <div className='bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-blue-100 relative'>
-                {/* Cross icon in top-right corner */}
                 <Button
                     className='absolute top-4 right-4 bg-transparent hover:bg-gray-100 rounded-full'
                     onClick={() => navigate("/home")}
                     aria-label='Back to Home'
                 >
-                    <FaUserCircle className='hidden' />{" "}
                     <span className='sr-only'>Back to Home</span>
                     <ImCancelCircle className=' h-6 w-6 text-gray-500 hover:text-gray-700' />
                 </Button>
                 <div className='flex flex-col items-center mb-6'>
                     <div className='bg-blue-600 rounded-full p-3 mb-2'>
-                        <FaUserCircle className='w-8 h-8 text-white' />
+                        <FaUserPlus className='w-8 h-8 text-white' />
                     </div>
                     <h1 className='text-3xl font-extrabold text-blue-700 mb-1'>
-                        Welcome Back
+                        Create Account
                     </h1>
                     <p className='text-gray-500 text-sm'>
-                        Sign in to your account
+                        Sign up to get started
                     </p>
                 </div>
-                <form onSubmit={handleLogin} className='space-y-5'>
+                <form onSubmit={handleRegister} className='space-y-5'>
                     <div>
                         <label className='block text-gray-700 mb-1 font-medium'>
                             Email
                         </label>
                         <input
-                            onChange={handleLog}
+                            onChange={handleReg}
                             type='email'
                             className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition'
                             placeholder='Enter your email'
                             name='email'
-                            value={logData.email}
+                            value={regData.email}
                             required
                             autoComplete='username'
                         />
@@ -105,18 +98,23 @@ const Login = () => {
                         </label>
                         <input
                             type='password'
-                            onChange={handleLog}
+                            onChange={handleReg}
                             className='w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition'
                             placeholder='Enter your password'
                             name='password'
-                            value={logData.password}
+                            value={regData.password}
                             required
-                            autoComplete='current-password'
+                            autoComplete='new-password'
                         />
                     </div>
                     {error && (
                         <div className='text-red-600 text-sm text-center'>
                             {error}
+                        </div>
+                    )}
+                    {success && (
+                        <div className='text-green-600 text-sm text-center'>
+                            {success}
                         </div>
                     )}
                     <button
@@ -129,21 +127,21 @@ const Login = () => {
                         {loading ? (
                             <FaSpinner className='animate-spin h-5 w-5 mr-2 text-white' />
                         ) : null}
-                        {loading ? "Logging in..." : "Login"}
+                        {loading ? "Registering..." : "Register"}
                     </button>
                 </form>
                 <div className='mt-6 text-center text-sm text-gray-500'>
-                    Don't have an account?{" "}
-                    <a
-                        href='/register'
+                    Already have an account?{" "}
+                    <NavLink
+                        to='/login'
                         className='text-blue-600 hover:underline'
                     >
-                        Sign up
-                    </a>
+                        Login
+                    </NavLink>
                 </div>
             </div>
         </div>
     );
 };
 
-export default Login;
+export default Register;

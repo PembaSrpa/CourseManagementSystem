@@ -8,6 +8,7 @@ import {
 import { AppProvider } from "./context/AppContext";
 import Sidebar from "./components/SideBar";
 import ProtectedRoute from "./ProtectedRoute";
+import Subject from "./pages/Subject";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Courses = lazy(() => import("./pages/Courses"));
@@ -48,6 +49,7 @@ function App() {
                                 <Route path='courses' element={<Courses />} />
                                 <Route path='students' element={<Students />} />
                                 <Route path='teachers' element={<Teachers />} />
+                                <Route path='subjects' element={<Subject />} />
                             </Route>
                         </Routes>
                     </Suspense>

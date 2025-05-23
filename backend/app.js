@@ -7,6 +7,8 @@ import courseRouter from "./routes/courseRouter.js";
 import studentRouter from "./routes/studentRouter.js";
 import teacherRouter from "./routes/teacherRouter.js";
 
+import subjectRouter from "./routes/subjectRouter.js";
+
 const app = express();
 configDotenv();
 app.use(cors());
@@ -15,6 +17,7 @@ app.use("/api", userRouter);
 app.use("/api", courseRouter);
 app.use("/api", studentRouter);
 app.use("/api", teacherRouter);
+app.use("/api", subjectRouter);
 const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

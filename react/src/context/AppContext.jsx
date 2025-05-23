@@ -8,6 +8,7 @@ export const AppProvider = ({ children }) => {
     const [courses, setCourses] = useState([]);
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
+    const [subjects, setSubjects] = useState([]);
 
     const getCourses = async () => {
         try {
@@ -42,10 +43,23 @@ export const AppProvider = ({ children }) => {
         }
     };
 
+    const getsubjects = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:5050/api/getfees"
+            );
+            setSubjects(response.data.result);
+        } catch (error) {
+            console.error("Error fetching fees:", error);
+        }
+    };
+
+    // ✅ Fetch only once on app mount
     useEffect(() => {
         getCourses();
         getStudents();
         getTeachers();
+        getsubjects();
     }, []);
 
     return (
@@ -62,6 +76,8 @@ export const AppProvider = ({ children }) => {
                 getCourses,
                 getStudents,
                 getTeachers,
+                subjects,
+                setSubjects,
             }}
         >
             {children}

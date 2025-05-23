@@ -23,6 +23,11 @@ const resourceLinks = [
         label: "Teachers",
         icon: <FiUser className='w-5 h-5' />,
     },
+    {
+        to: "/subjects",
+        label: "Subjects",
+        icon: <FiBook className='w-5 h-5' />,
+    },
 ];
 
 const SidebarContent = () => {
@@ -84,6 +89,7 @@ const SidebarContent = () => {
                     ))}
                 </nav>
             </div>
+            
 
             <div className='mt-auto'>
                 <Button className='w-full' onClick={handleLogout}>

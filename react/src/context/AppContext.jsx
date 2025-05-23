@@ -1,6 +1,5 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { useEffect } from "react";
 
 const AppContext = createContext();
 
@@ -9,44 +8,46 @@ export const AppProvider = ({ children }) => {
     const [courses, setCourses] = useState([]);
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
+
     const getCourses = async () => {
-        await axios
-            .get("http://localhost:5050/api/getcourse")
-            .then((response) => {
-                setCourses(response.data.result);
-            })
-            .catch((error) => {
-                console.error("Error fetching courses:", error);
-            });
+        try {
+            const response = await axios.get(
+                "http://localhost:5050/api/getcourse"
+            );
+            setCourses(response.data.result);
+        } catch (error) {
+            console.error("Error fetching courses:", error);
+        }
     };
 
     const getStudents = async () => {
-        await axios
-            .get("http://localhost:5050/api/getstudent")
-            .then((response) => {
-                setStudents(response.data.result);
-            })
-            .catch((error) => {
-                console.error("Error fetching students:", error);
-            });
+        try {
+            const response = await axios.get(
+                "http://localhost:5050/api/getstudent"
+            );
+            setStudents(response.data.result);
+        } catch (error) {
+            console.error("Error fetching students:", error);
+        }
     };
 
     const getTeachers = async () => {
-        await axios
-            .get("http://localhost:5050/api/getteacher")
-            .then((response) => {
-                setTeachers(response.data.result);
-            })
-            .catch((error) => {
-                console.error("Error fetching teachers:", error);
-            });
+        try {
+            const response = await axios.get(
+                "http://localhost:5050/api/getteacher"
+            );
+            setTeachers(response.data.result);
+        } catch (error) {
+            console.error("Error fetching teachers:", error);
+        }
     };
 
+    // ✅ Fetch only once on app mount
     useEffect(() => {
         getCourses();
         getStudents();
         getTeachers();
-    }, [courses, students, teachers]);
+    }, []);
 
     return (
         <AppContext.Provider

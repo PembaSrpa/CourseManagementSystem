@@ -1,19 +1,39 @@
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
-import DataTable from "../components/DataTable";
-import { useState } from "react";
 import Button from "../components/Button";
 import axios from "axios";
 
+// Lazy load DataTable
+const DataTable = lazy(() => import("../components/DataTable"));
+
 const Students = () => {
     const { students, getStudents } = useAppContext();
+    const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
-    const intial = {
+    const initial = {
         name: "",
         email: "",
         course: "",
     };
-    const [formData, setFormData] = useState(intial);
-    const [editing, setEditing] = useState(false);
+    const [formData, setFormData] = useState(initial);
+    const [editing, setEditing] = useState(null);
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            setLoading(true);
+            await getStudents();
+            setLoading(false);
+        };
+        fetchStudents();
+        // eslint-disable-next-line
+    }, []);
+
+    const columns = [
+        { key: "id", title: "ID" },
+        { key: "name", title: "Name" },
+        { key: "email", title: "Email" },
+        { key: "course", title: "Course" },
+    ];
 
     const handleEdit = (row) => {
         setFormData({
@@ -26,37 +46,28 @@ const Students = () => {
         setShowForm(true);
     };
 
-    const handleDelete = (row) => {
+    const handleDelete = async (row) => {
         if (window.confirm("Are you sure you want to delete this student?")) {
-            deleteStudent(row.id);
-            getStudents();
+            await deleteStudent(row.id);
+            await getStudents();
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.name && formData.email && formData.course) {
             if (editing === true) {
-                updateStudent(formData.id);
-                getStudents();
-                // Edit existing
+                await updateStudent(formData.id);
+                await getStudents();
             } else {
-                // Add new
-                addStudent();
-                getStudents();
+                await addStudent();
+                await getStudents();
             }
+            setShowForm(false);
+            setFormData({ name: "", email: "", course: "" });
+            setEditing(null);
         }
-        setShowForm(false);
-        setFormData({ name: "", email: "", course: "" });
-        setEditing(null);
     };
-
-    const columns = [
-        { key: "id", title: "ID" },
-        { key: "name", title: "Name" },
-        { key: "email", title: "Email" },
-        { key: "course", title: "Course" },
-    ];
 
     const addStudent = async () => {
         await axios
@@ -95,15 +106,18 @@ const Students = () => {
             .post(`http://localhost:5050/api/deletestudent/${id}`)
             .then((response) => {
                 console.log(response.data);
-                setFormData({ name: "", email: "", course: "" });
             })
             .catch((error) => {
                 console.error("Error deleting student:", error);
             });
     };
 
+    if (loading) {
+        return <div className='text-gray-500'>Loading Students...</div>;
+    }
+
     return (
-        <div className='ml-64 p-6'>
+        <div className='p-6'>
             <div className='flex justify-between items-center mb-6'>
                 <h1 className='text-2xl font-bold mb-6'>Students</h1>
                 <Button onClick={() => setShowForm(!showForm)}>
@@ -162,12 +176,14 @@ const Students = () => {
                     </form>
                 </div>
             )}
-            <DataTable
-                data={students}
-                columns={columns}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <Suspense fallback={<div>Loading table...</div>}>
+                <DataTable
+                    data={students}
+                    columns={columns}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            </Suspense>
         </div>
     );
 };

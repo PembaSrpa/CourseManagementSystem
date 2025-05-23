@@ -1,11 +1,14 @@
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
-import DataTable from "../components/DataTable";
-import { useState } from "react";
 import Button from "../components/Button";
 import axios from "axios";
 
+// Lazy load DataTable
+const DataTable = lazy(() => import("../components/DataTable"));
+
 const Teachers = () => {
     const { teachers, getTeachers } = useAppContext();
+    const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const intial = {
         name: "",
@@ -14,6 +17,16 @@ const Teachers = () => {
     };
     const [formData, setFormData] = useState(intial);
     const [editing, setEditing] = useState(null);
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            setLoading(true);
+            await getTeachers();
+            setLoading(false);
+        };
+        fetchTeachers();
+        // eslint-disable-next-line
+    }, []);
 
     const columns = [
         { key: "id", title: "ID" },
@@ -32,23 +45,23 @@ const Teachers = () => {
         setShowForm(true);
     };
 
-    const handleDelete = (row) => {
+    const handleDelete = async (row) => {
         if (window.confirm("Are you sure you want to delete this teacher?")) {
-            deleteTeacher(row.id);
-            getTeachers();
+            await deleteTeacher(row.id);
+            await getTeachers();
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.name && formData.email && formData.subject) {
             if (editing === true) {
-                updateTeacher(formData.id);
-                getTeachers();
+                await updateTeacher(formData.id);
+                await getTeachers();
             } else {
                 // Add new
-                addTeacher();
-                getTeachers();
+                await addTeacher();
+                await getTeachers();
             }
 
             setShowForm(false);
@@ -99,8 +112,12 @@ const Teachers = () => {
             });
     };
 
+    if (loading) {
+        return <div className='text-gray-500'>Loading Teachers...</div>;
+    }
+
     return (
-        <div className='ml-64 p-6'>
+        <div className='p-6'>
             <div className='flex justify-between items-center mb-6'>
                 <h1 className='text-2xl font-bold mb-6'>Teachers</h1>
                 <Button onClick={() => setShowForm(!showForm)}>
@@ -159,12 +176,14 @@ const Teachers = () => {
                     </form>
                 </div>
             )}
-            <DataTable
-                data={teachers}
-                columns={columns}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            <Suspense fallback={<div>Loading table...</div>}>
+                <DataTable
+                    data={teachers}
+                    columns={columns}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            </Suspense>
         </div>
     );
 };

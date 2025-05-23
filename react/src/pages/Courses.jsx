@@ -1,30 +1,34 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
+import Button from "../components/Button";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
-// Lazy load components
 const DataTable = lazy(() => import("../components/DataTable"));
-const Button = lazy(() => import("../components/Button"));
 
 const Courses = () => {
     const { courses, getCourses } = useAppContext();
-    const [showForm, setShowForm] = useState(false);
-    const [formData, setFormData] = useState({ name: "", description: "" });
-    const [editing, setEditing] = useState(false);
-
-    // Add loading state
     const [loading, setLoading] = useState(true);
+    const [showForm, setShowForm] = useState(false);
+    const initial = { name: "", description: "" };
+    const [formData, setFormData] = useState(initial);
+    const [editing, setEditing] = useState(null);
 
     useEffect(() => {
-        // Simulate data fetch
-        const timer = setTimeout(() => {
-            getCourses();
+        const fetchCourses = async () => {
+            setLoading(true);
+            await getCourses();
             setLoading(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
+        };
+        fetchCourses();
         // eslint-disable-next-line
     }, []);
+
+    const columns = [
+        { key: "id", title: "ID" },
+        { key: "name", title: "Name" },
+        { key: "description", title: "Description" },
+    ];
 
     const handleEdit = (row) => {
         setFormData({
@@ -36,36 +40,30 @@ const Courses = () => {
         setShowForm(true);
     };
 
-    const handleDelete = (row) => {
+    const handleDelete = async (row) => {
         if (window.confirm("Are you sure you want to delete this course?")) {
-            deletecourse(row.id);
-            getCourses();
+            await deleteCourse(row.id);
+            await getCourses();
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.name && formData.description) {
             if (editing === true) {
-                updatecourse(formData.id);
-                getCourses();
+                await updateCourse(formData.id);
+                await getCourses();
             } else {
-                addcourse();
-                getCourses();
+                await addCourse();
+                await getCourses();
             }
+            setShowForm(false);
+            setFormData(initial);
+            setEditing(null);
         }
-        setShowForm(false);
-        setFormData({ name: "", description: "" });
-        setEditing(null);
     };
 
-    const columns = [
-        { key: "id", title: "ID" },
-        { key: "name", title: "Name" },
-        { key: "description", title: "Description" },
-    ];
-
-    const addcourse = async () => {
+    const addCourse = async () => {
         await axios
             .post("http://localhost:5050/api/createcourse", {
                 name: formData.name,
@@ -73,14 +71,14 @@ const Courses = () => {
             })
             .then((response) => {
                 console.log(response.data);
-                setFormData({ name: "", description: "" });
+                setFormData(initial);
             })
             .catch((error) => {
                 console.error("Error creating course:", error);
             });
     };
 
-    const updatecourse = async (id) => {
+    const updateCourse = async (id) => {
         await axios
             .post(`http://localhost:5050/api/updatecourse/${id}`, {
                 name: formData.name,
@@ -88,19 +86,18 @@ const Courses = () => {
             })
             .then((response) => {
                 console.log(response.data);
-                setFormData({ name: "", description: "" });
+                setFormData(initial);
             })
             .catch((error) => {
                 console.error("Error updating course:", error);
             });
     };
 
-    const deletecourse = async (id) => {
+    const deleteCourse = async (id) => {
         await axios
             .post(`http://localhost:5050/api/deletecourse/${id}`)
             .then((response) => {
                 console.log(response.data);
-                setFormData({ name: "", description: "" });
             })
             .catch((error) => {
                 console.error("Error deleting course:", error);
@@ -108,26 +105,27 @@ const Courses = () => {
     };
 
     if (loading) {
-        return <div className='text-gray-500'>Loading Courses...</div>;
+        return (
+            <div className='flex items-center text-gray-500'>
+                <FaSpinner className='animate-spin mr-2' /> Loading Courses...
+            </div>
+        );
     }
 
     return (
         <div className='p-6'>
             <div className='flex justify-between items-center mb-6'>
-                <h1 className='text-2xl font-bold'>Courses</h1>
-                <Suspense fallback={<span>Loading...</span>}>
-                    <Button
-                        onClick={() => {
-                            setShowForm(!showForm);
-                            setFormData({ name: "", description: "" });
-                            setEditing(null);
-                        }}
-                    >
-                        {showForm ? "Cancel" : "Add Course"}
-                    </Button>
-                </Suspense>
+                <h1 className='text-2xl font-bold mb-6'>Courses</h1>
+                <Button
+                    onClick={() => {
+                        setShowForm(!showForm);
+                        setFormData(initial);
+                        setEditing(null);
+                    }}
+                >
+                    {showForm ? "Cancel" : "Add Course"}
+                </Button>
             </div>
-
             {showForm && (
                 <div className='mb-6 p-4 border rounded-lg'>
                     <h2 className='text-lg font-semibold mb-4'>
@@ -161,14 +159,18 @@ const Courses = () => {
                                 }
                             />
                         </div>
-                        <Suspense fallback={<span>Loading...</span>}>
-                            <Button type='submit'>Save</Button>
-                        </Suspense>
+                        <Button type='submit'>Save</Button>
                     </form>
                 </div>
             )}
-
-            <Suspense fallback={<span>Loading table...</span>}>
+            <Suspense
+                fallback={
+                    <div className='flex items-center'>
+                        <FaSpinner className='animate-spin mr-2' /> Loading
+                        table...
+                    </div>
+                }
+            >
                 <DataTable
                     data={courses}
                     columns={columns}

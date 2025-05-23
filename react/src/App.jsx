@@ -14,6 +14,7 @@ const Courses = lazy(() => import("./pages/Courses"));
 const Students = lazy(() => import("./pages/Student"));
 const Teachers = lazy(() => import("./pages/Teacher"));
 const Login = lazy(() => import("./pages/Login"));
+const HomePage = lazy(() => import("./pages/HomePage"));
 
 function App() {
     return (
@@ -26,9 +27,11 @@ function App() {
                         }
                     >
                         <Routes>
-                            <Route path='/' element={<Login />} />
+                            <Route path='/' element={<HomePage />} />
+                            <Route path='/home' element={<HomePage />} />
                             <Route path='/login' element={<Login />} />
                             <Route
+                                path='/'
                                 element={
                                     <ProtectedRoute>
                                         <div className='flex'>

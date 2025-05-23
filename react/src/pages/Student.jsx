@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 import Button from "../components/Button";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa"; // <-- Add this line
 
 // Lazy load DataTable
 const DataTable = lazy(() => import("../components/DataTable"));
@@ -113,7 +114,11 @@ const Students = () => {
     };
 
     if (loading) {
-        return <div className='text-gray-500'>Loading Students...</div>;
+        return (
+            <div className='flex items-center text-gray-500'>
+                <FaSpinner className='animate-spin mr-2' /> Loading Students...
+            </div>
+        );
     }
 
     return (
@@ -176,7 +181,14 @@ const Students = () => {
                     </form>
                 </div>
             )}
-            <Suspense fallback={<div>Loading table...</div>}>
+            <Suspense
+                fallback={
+                    <div className='flex items-center'>
+                        <FaSpinner className='animate-spin mr-2' /> Loading
+                        table...
+                    </div>
+                }
+            >
                 <DataTable
                     data={students}
                     columns={columns}

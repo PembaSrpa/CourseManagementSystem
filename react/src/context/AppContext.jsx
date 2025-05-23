@@ -42,7 +42,6 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    // ✅ Fetch only once on app mount
     useEffect(() => {
         getCourses();
         getStudents();

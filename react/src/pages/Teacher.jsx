@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 import Button from "../components/Button";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa"; // <-- Add this line
 
 // Lazy load DataTable
 const DataTable = lazy(() => import("../components/DataTable"));
@@ -10,12 +11,12 @@ const Teachers = () => {
     const { teachers, getTeachers } = useAppContext();
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
-    const intial = {
+    const initial = {
         name: "",
         email: "",
         subject: "",
     };
-    const [formData, setFormData] = useState(intial);
+    const [formData, setFormData] = useState(initial);
     const [editing, setEditing] = useState(null);
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const Teachers = () => {
         { key: "email", title: "Email" },
         { key: "subject", title: "Subject" },
     ];
+
     const handleEdit = (row) => {
         setFormData({
             id: row.id,
@@ -59,11 +61,9 @@ const Teachers = () => {
                 await updateTeacher(formData.id);
                 await getTeachers();
             } else {
-                // Add new
                 await addTeacher();
                 await getTeachers();
             }
-
             setShowForm(false);
             setFormData({ name: "", email: "", subject: "" });
             setEditing(null);
@@ -101,6 +101,7 @@ const Teachers = () => {
                 console.error("Error updating teacher:", error);
             });
     };
+
     const deleteTeacher = async (id) => {
         await axios
             .post(`http://localhost:5050/api/deleteteacher/${id}`)
@@ -113,7 +114,11 @@ const Teachers = () => {
     };
 
     if (loading) {
-        return <div className='text-gray-500'>Loading Teachers...</div>;
+        return (
+            <div className='flex items-center text-gray-500'>
+                <FaSpinner className='animate-spin mr-2' /> Loading Teachers...
+            </div>
+        );
     }
 
     return (
@@ -176,7 +181,14 @@ const Teachers = () => {
                     </form>
                 </div>
             )}
-            <Suspense fallback={<div>Loading table...</div>}>
+            <Suspense
+                fallback={
+                    <div className='flex items-center'>
+                        <FaSpinner className='animate-spin mr-2' /> Loading
+                        table...
+                    </div>
+                }
+            >
                 <DataTable
                     data={teachers}
                     columns={columns}

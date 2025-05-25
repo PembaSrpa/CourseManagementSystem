@@ -43,7 +43,9 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    const getsubjects = async () => {
+
+
+    const getsubjects= async () => {
         try {
             const response = await axios.get(
                 "http://localhost:5050/api/getfees"
@@ -60,6 +62,7 @@ export const AppProvider = ({ children }) => {
         getStudents();
         getTeachers();
         getsubjects();
+
     }, []);
 
     return (

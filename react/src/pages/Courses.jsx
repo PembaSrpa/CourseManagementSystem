@@ -28,6 +28,8 @@ const Courses = () => {
         { key: "id", title: "ID" },
         { key: "name", title: "Name" },
         { key: "description", title: "Description" },
+        { key: "fees", title: "Fees" },
+
     ];
 
     const handleEdit = (row) => {
@@ -35,6 +37,7 @@ const Courses = () => {
             id: row.id,
             name: row.name,
             description: row.description,
+            fees: row.fees,
         });
         setEditing(true);
         setShowForm(true);
@@ -68,6 +71,7 @@ const Courses = () => {
             .post("http://localhost:5050/api/createcourse", {
                 name: formData.name,
                 description: formData.description,
+                fees: formData.fees,
             })
             .then((response) => {
                 console.log(response.data);
@@ -83,6 +87,7 @@ const Courses = () => {
             .post(`http://localhost:5050/api/updatecourse/${id}`, {
                 name: formData.name,
                 description: formData.description,
+                fees: formData.fees,
             })
             .then((response) => {
                 console.log(response.data);
@@ -155,6 +160,20 @@ const Courses = () => {
                                     setFormData({
                                         ...formData,
                                         description: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className='mb-4'>
+                            <label className='block mb-2'>Fees</label>
+                            <input
+                                type='number'
+                                className='w-full p-2 border rounded'
+                                value={formData.fees}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        fees: e.target.value,
                                     })
                                 }
                             />

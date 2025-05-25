@@ -2,10 +2,10 @@ import { db } from "../config/db.js";
 
 
 export const createCourse = (req, res) => {
-    const {name, description } = req.body;
+    const {name, description,fees } = req.body;
 
-    const sql = "INSERT INTO course (name, description) VALUES ( ?, ?)";
-    db.query(sql, [name,description], (err, result) => {
+    const sql = "INSERT INTO course (name, description, fees) VALUES ( ?, ?, ?)";
+    db.query(sql, [name,description,fees], (err, result) => {
         if (err) {
             console.error("Error creating course:", err);
             return res.status(500).json({ error: "Error creating course" });
@@ -52,10 +52,10 @@ export const getCourseById = (req, res) => {
 
 export const updateCourse = (req, res) => {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description,fees } = req.body;
 
-    const sql = "UPDATE course SET name = ?, description = ? WHERE id = ?";
-    db.query(sql, [name, description, id], (err, result) => {
+    const sql = "UPDATE course SET name = ?, description = ?, fees=? WHERE id = ?";
+    db.query(sql, [name, description,fees, id], (err, result) => {
         if (err) {
             console.error("Error updating course:", err);
             return res.status(500).json({ error: "Error updating course" });

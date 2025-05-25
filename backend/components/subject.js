@@ -1,16 +1,16 @@
 import {db} from "../config/db.js";
 
 export  const addFees = async (req, res) => {
-    const { code, subject, fees } = req.body;
+    const { code, subject, course } = req.body;
 
-    const sql = "INSERT INTO fees (code, subject, fees) VALUES (?, ?, ?)";
-    db.query(sql, [code, subject, fees], (err, result) => {
+    const sql = "INSERT INTO fees (code, subject, course) VALUES (?, ?, ?)";
+    db.query(sql, [code, subject, course], (err, result) => {
         if (err) {
-            console.error("Error adding fees:", err);
-            return res.status(500).json({ error: "Error adding fees" });
+            console.error("Error adding subject:", err);
+            return res.status(500).json({ error: "Error adding subject" });
         }
         return res.send({
-            message: "Fees added successfully",
+            message: "subject added successfully",
             result,
         })
     });
@@ -20,11 +20,11 @@ export const getFees = (req, res) => {
     const sql = "SELECT * FROM fees";
     db.query(sql, (err, result) => {
         if (err) {
-            console.error("Error fetching fees:", err);
-            return res.status(500).json({ error: "Error fetching fees" });
+            console.error("Error fetching subject:", err);
+            return res.status(500).json({ error: "Error fetching subject" });
         }
         return res.send({
-            message: "Fees data fetched successfully",
+            message: "subject data fetched successfully",
             result,
         })
     });
@@ -32,10 +32,10 @@ export const getFees = (req, res) => {
 
 export const updateFees = (req, res) => {
     const { id } = req.params;
-    const { code, subject, fees } = req.body;
+    const { code, subject, course } = req.body;
 
-    const sql = "UPDATE fees SET code = ?, subject = ?, fees = ? WHERE id = ?";
-    db.query(sql, [code, subject, fees, id], (err, result) => {
+    const sql = "UPDATE fees SET code = ?, subject = ?, course = ? WHERE id = ?";
+    db.query(sql, [code, subject, course, id], (err, result) => {
         if (err) {
             console.error("Error updating fees:", err);
             return res.status(500).json({ error: "Error updating fees" });
@@ -51,11 +51,11 @@ export const deleteFees = (req, res) => {
     const sql = "DELETE FROM fees WHERE id = ?";
     db.query(sql, [id], (err, result) => {
         if (err) {
-            console.error("Error deleting fees:", err);
-            return res.status(500).json({ error: "Error deleting fees" });
+            console.error("Error deleting subject:", err);
+            return res.status(500).json({ error: "Error deleting subject" });
         }
         return res.send({
-            message: "Fees deleted successfully",
+            message: "subject deleted successfully",
             result,
         })
     });
@@ -66,14 +66,14 @@ export const getFeesById = (req, res) => {
     const sql = "SELECT * FROM fees WHERE id = ?";
     db.query(sql, [id], (err, result) => {
         if (err) {
-            console.error("Error fetching fees:", err);
-            return res.status(500).json({ error: "Error fetching fees" });
+            console.error("Error fetching subject:", err);
+            return res.status(500).json({ error: "Error fetching subject" });
         }
         if (result.length === 0) {
-            return res.status(404).json({ error: "Fees not found" });
+            return res.status(404).json({ error: "subject not found" });
         }
         return res.send({
-            message: "Fees fetched successfully",
+            message: "subject fetched successfully",
             result,
         })
     });

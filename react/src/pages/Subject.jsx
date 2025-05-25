@@ -12,6 +12,7 @@ const Subject = () => {
     const intial={
         code:"",
         subject:"",
+        course:""
     }
     const[formData,setFormData]=useState(intial);
     const [editing, setEditing] = useState(false);
@@ -19,7 +20,7 @@ const Subject = () => {
 
     
     const handleEdit=(row) =>{
-        setFormData({id:row.id, code: row.code, subject: row.subject})
+        setFormData({id:row.id, code: row.code, subject: row.subject, course: row.course });
         setEditing(true)
         setShowForm(true)
     }
@@ -33,9 +34,9 @@ const Subject = () => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (formData.name && formData.subject && formData.fees) {
+        if (formData.name && formData.subject && formData.course) {
             if (editing === true) {
-                updateSubjects(formData.id);
+               updateSubjects(formData.id);
                getsubjects();
                 // Edit existing       
             }else{
@@ -45,7 +46,7 @@ const Subject = () => {
             }
         }
         setShowForm(false);
-        setFormData({ code: "", subject: "" });
+        setFormData(intial);
         setEditing(null);
     };
     
@@ -53,21 +54,23 @@ const Subject = () => {
         { key: "id", title: "ID" },
         { key: "code", title: "Code" },
         { key: "subject", title: "Subject" },
+        { key: "course", title: "Course" },
         
     ];
     
     const addSubjects = async () => {
-        await axios.post("http://localhost:5050/api/createstudent", {
+        await axios.post("http://localhost:5050/api/addfees", {
             name: formData.name,
             subject: formData.subject,
+            course: formData.course
         })
         .then((response) => {
             console.log(response.data);
-            setFormData({ code: "", subject: "" });
+            setFormData({ code: "", subject: "", course: "" });
         }
         )
         .catch((error) => {
-            console.error("Error creating fees:", error);
+            console.error("Error creating subject:", error);
         }
         );
     }
@@ -76,15 +79,16 @@ const Subject = () => {
     const updateSubjects = async (id) => {
         await axios.post(`http://localhost:5050/api/updatefees/${id}`, {
             code: formData.code,
-          subject: formData.subject   
+          subject: formData.subject,
+          course: formData.course   
         })
         .then((response) => {
             console.log(response.data);
-            setFormData({ code: "", subject: ""});
+            setFormData({ code: "", subject: "", course: "" });
         }
         )
         .catch((error) => {
-            console.error("Error updating fees:", error);
+            console.error("Error updating subject:", error);
         }
         );
     }
@@ -94,11 +98,11 @@ const Subject = () => {
         await axios.post(`http://localhost:5050/api/deletefees/${id}`)
         .then((response) => {
             console.log(response.data);
-            setFormData({ code: "", subject: "" });
+            setFormData({ code: "", subject: "", course: "" });
         }
         )
         .catch((error) => {
-            console.error("Error deleting fees:", error);
+            console.error("Error deleting subject:", error);
         }
         );
     }
@@ -111,7 +115,7 @@ const Subject = () => {
                 
             <h1 className='text-2xl font-bold mb-6'>Subject</h1>
              <Button onClick={() => {setShowForm(!showForm)
-                setFormData({code:"", subject:""})
+                setFormData(intial)
                 setEditing(null)
              }}>
                     {showForm ? "Cancel" : "Add Suject"}
@@ -127,7 +131,7 @@ const Subject = () => {
                    
                     >
                         <div className='mb-4'>
-                            <label className='block mb-2'>Name</label>
+                            <label className='block mb-2'>Code</label>
                             <input
                                 type='text'
                                 className='w-full p-2 border rounded'
@@ -145,11 +149,25 @@ const Subject = () => {
                             <input
                                 type='text'
                                 className='w-full p-2 border rounded'
-                                value={formData.email}
+                                value={formData.subject}
                                 onChange={(e) =>
                                     setFormData({
                                         ...formData,
                                         subject: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className='mb-4'>
+                            <label className='block mb-2'>Course</label>
+                            <input
+                                type='text'
+                                className='w-full p-2 border rounded'
+                                value={formData.course}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        course: e.target.value,
                                     })
                                 }
                             />

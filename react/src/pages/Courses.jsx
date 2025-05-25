@@ -10,7 +10,7 @@ const Courses = () => {
     const { courses, getCourses } = useAppContext();
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
-    const initial = { name: "", description: "" };
+    const initial = { name: "", description: "",fees:"" };
     const [formData, setFormData] = useState(initial);
     const [editing, setEditing] = useState(null);
 
@@ -28,6 +28,8 @@ const Courses = () => {
         { key: "id", title: "ID" },
         { key: "name", title: "Name" },
         { key: "description", title: "Description" },
+        { key: "fees", title: "Fees in RS" },
+
     ];
 
     const handleEdit = (row) => {
@@ -35,6 +37,7 @@ const Courses = () => {
             id: row.id,
             name: row.name,
             description: row.description,
+            fees: row.fees,
         });
         setEditing(true);
         setShowForm(true);
@@ -49,7 +52,7 @@ const Courses = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.name && formData.description) {
+        if (formData.name && formData.description && formData.fees) {
             if (editing === true) {
                 await updateCourse(formData.id);
                 await getCourses();
@@ -68,6 +71,7 @@ const Courses = () => {
             .post("http://localhost:5050/api/createcourse", {
                 name: formData.name,
                 description: formData.description,
+                fees: formData.fees,
             })
             .then((response) => {
                 console.log(response.data);
@@ -83,6 +87,7 @@ const Courses = () => {
             .post(`http://localhost:5050/api/updatecourse/${id}`, {
                 name: formData.name,
                 description: formData.description,
+                fees: formData.fees,
             })
             .then((response) => {
                 console.log(response.data);
@@ -155,6 +160,20 @@ const Courses = () => {
                                     setFormData({
                                         ...formData,
                                         description: e.target.value,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className='mb-4'>
+                            <label className='block mb-2'>Fees in RS</label>
+                            <input
+                                type='number'
+                                className='w-full p-2 border rounded'
+                                value={formData.fees}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        fees: e.target.value,
                                     })
                                 }
                             />
